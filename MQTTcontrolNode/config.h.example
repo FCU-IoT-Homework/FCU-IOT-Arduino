@@ -1,0 +1,7 @@
+// network config
+
+#define USE_DHCP true
+
+byte mac[] = { 0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED };
+IPAddress ip(192, 168, 0, 150);
+IPAddress server(192, 168, 0, 7);
