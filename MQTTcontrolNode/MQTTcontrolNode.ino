@@ -4,6 +4,7 @@
 #include <PubSubClient.h>
 #include "config.h"
 
+void subscribeChannel();
 void callback(char* topic, byte* payload, unsigned int length);
 
 EthernetClient ethClient;
@@ -49,7 +50,7 @@ void reconnect() {
         if (client.connect("arduinoClient")) {
             Serial.println("connected");
             // resubscribe
-            // client.subscribe("LED0");
+            subscribeChannel();
         } else {
             Serial.print("failed, rc=");
             Serial.print(client.state());
@@ -58,6 +59,16 @@ void reconnect() {
             delay(5000);
         }
     }
+}
+
+void subscribeChannel() {
+    client.subscribe("light_0");
+    client.subscribe("light_1");
+    client.subscribe("light_2");
+    client.subscribe("door_0");
+    client.subscribe("air_conditioning_0");
+
+    client.subscribe("infrared_transmitter_0");
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
