@@ -6,6 +6,7 @@
 
 void subscribeChannel();
 void callback(char* topic, byte* payload, unsigned int length);
+void printReceiveData(char* topic, byte* payload, unsigned int length);
 
 EthernetClient ethClient;
 PubSubClient client(ethClient);
@@ -72,6 +73,16 @@ void subscribeChannel() {
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-    
+    //debug
+    printReceiveData(topic, payload, length);
 }
 
+void printReceiveData(char* topic, byte* payload, unsigned int length) {
+    Serial.print("Message arrived [");
+    Serial.print(topic);
+    Serial.print("] ");
+    for (int i=0;i<length;i++) {
+    Serial.print((char)payload[i]);
+    }
+    Serial.println();
+}
