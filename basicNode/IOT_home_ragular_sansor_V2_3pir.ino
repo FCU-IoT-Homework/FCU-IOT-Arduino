@@ -147,4 +147,3 @@ void sendPackagePir() {
   if (client.connected()) {
     client.stop();  // DISCONNECT FROM THE SERVER
   }
-}
