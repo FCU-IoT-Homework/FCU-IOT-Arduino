@@ -2,6 +2,7 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <PubSubClient.h>
+#include <IRremote.h>
 #include "config.h"
 
 #define CHANNEL_LIGHT_0 "light_0"
@@ -15,9 +16,11 @@ void subscribeChannel();
 void callback(char* topic, byte* payload, unsigned int length);
 void printReceiveData(char* topic, byte* payload, unsigned int length);
 void controlRelay(const int pin_number, byte* payload);
+void infraredTransmitter(byte* payload, unsigned int length);
 
 EthernetClient ethClient;
 PubSubClient client(ethClient);
+IRsend irsend;
 
 void setup() {
     Serial.begin(9600);
@@ -45,21 +48,17 @@ void setup() {
     pinMode(PIN_LIGHT_2, OUTPUT);
     pinMode(PIN_DOOR_0, OUTPUT);
     pinMode(PIN_AIR_CONDITIONING_0, OUTPUT);
-
-    // TODO: PIN_INFRARED_TRANSMITTER_0
     
     digitalWrite(PIN_LIGHT_0, HIGH);
     digitalWrite(PIN_LIGHT_1, HIGH);
     digitalWrite(PIN_LIGHT_2, HIGH);
     digitalWrite(PIN_DOOR_0, HIGH);
     digitalWrite(PIN_AIR_CONDITIONING_0, HIGH);
-
-    // TODO: PIN_INFRARED_TRANSMITTER_0 init
 }
 
 void loop() {
     if (client.connected()) {
-
+        // nothing
     }
     else {
         reconnect();
@@ -115,7 +114,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
         controlRelay(PIN_AIR_CONDITIONING_0, payload);
     }
     else if (strcmp(topic, CHANNEL_INFRARED_TRANSMITTER_0) == 0) {
-        // TODO
+        infraredTransmitter(payload, length);
     }
 }
 
@@ -136,5 +135,32 @@ void controlRelay(const int pin_number, byte* payload) {
     else if (memcmp(payload, "off", 3) == 0) {
         digitalWrite(pin_number, HIGH);
     }
+}
+
+void infraredTransmitter(byte* payload, unsigned int length) {
+    if (length != 8) return;
+
+    unsigned long data = 0;
+    for (int i = 0; i < length; i++) {
+        char c = (char)payload[i];
+        if ('0' <= c && c <= '9') {
+            c -= '0';
+        }
+        else if ('A' <= c && c <= 'Z') {
+            c -= 'A';
+            c += 10;
+        }
+        else if ('a' <= c && c <= 'z') {
+            c -= 'z';
+            c += 10;
+        }
+        else {
+            return;
+        }
+        data <<= 4;
+        data |= c;
+    }
+    // Serial.println(data);
+    irsend.sendNEC(data, 32);
 }
 
