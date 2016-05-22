@@ -14,6 +14,7 @@
 void subscribeChannel();
 void callback(char* topic, byte* payload, unsigned int length);
 void printReceiveData(char* topic, byte* payload, unsigned int length);
+void controlRelay(const int pin_number, byte* payload);
 
 EthernetClient ethClient;
 PubSubClient client(ethClient);
@@ -38,6 +39,14 @@ void setup() {
     
     // Allow the hardware to sort itself out
     delay(1500);
+
+    pinMode(PIN_LIGHT_0, OUTPUT);
+    pinMode(PIN_LIGHT_1, OUTPUT);
+    pinMode(PIN_LIGHT_2, OUTPUT);
+    pinMode(PIN_DOOR_0, OUTPUT);
+    pinMode(PIN_AIR_CONDITIONING_0, OUTPUT);
+
+    // TODO: PIN_INFRARED_TRANSMITTER_0
 }
 
 void loop() {
@@ -81,6 +90,25 @@ void subscribeChannel() {
 void callback(char* topic, byte* payload, unsigned int length) {
     //debug
     printReceiveData(topic, payload, length);
+
+    if (strcmp(topic, CHANNEL_LIGHT_0) == 0) {
+        controlRelay(PIN_LIGHT_0, payload);
+    }
+    else if (strcmp(topic, CHANNEL_LIGHT_1) == 0) {
+        controlRelay(PIN_LIGHT_1, payload);
+    }
+    else if (strcmp(topic, CHANNEL_LIGHT_2) == 0) {
+        controlRelay(PIN_LIGHT_2, payload);
+    }
+    else if (strcmp(topic, CHANNEL_DOOR_0) == 0) {
+        controlRelay(PIN_DOOR_0, payload);
+    }
+    else if (strcmp(topic, CHANNEL_AIR_CONDITIONING_0) == 0) {
+        controlRelay(PIN_AIR_CONDITIONING_0, payload);
+    }
+    else if (strcmp(topic, CHANNEL_INFRARED_TRANSMITTER_0) == 0) {
+        // TODO
+    }
 }
 
 void printReceiveData(char* topic, byte* payload, unsigned int length) {
@@ -92,3 +120,13 @@ void printReceiveData(char* topic, byte* payload, unsigned int length) {
     }
     Serial.println();
 }
+
+void controlRelay(const int pin_number, byte* payload) {
+    if (memcmp(payload, "on", 2) == 0) {
+        digitalWrite(pin_number, HIGH);
+    }
+    else if (memcmp(payload, "off", 3) == 0) {
+        digitalWrite(pin_number, LOW);
+    }
+}
+
