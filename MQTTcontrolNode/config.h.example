@@ -5,3 +5,16 @@
 byte mac[] = { 0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED };
 IPAddress ip(192, 168, 0, 150);
 IPAddress server(192, 168, 0, 7);
+
+/* 
+ * PIN config
+ * 因為有使用 w5100
+ * 要避開PIN 4、10、50、51、52 (Mega 2560)
+ * 要避開PIN 4、10、11、12、13 (UNO)
+ */
+#define PIN_LIGHT_0 2
+#define PIN_LIGHT_1 3
+#define PIN_LIGHT_2 5
+#define PIN_DOOR_0 6
+#define PIN_AIR_CONDITIONING_0 7
+#define PIN_INFRARED_TRANSMITTER_0 8
