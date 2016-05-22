@@ -16,7 +16,7 @@ void subscribeChannel();
 void callback(char* topic, byte* payload, unsigned int length);
 void printReceiveData(char* topic, byte* payload, unsigned int length);
 void controlRelay(const int pin_number, byte* payload);
-void infraredTransmitter(byte* payload, unsigned int length);
+void infraredTransmitter(byte* payload);
 
 EthernetClient ethClient;
 PubSubClient client(ethClient);
@@ -114,7 +114,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
         controlRelay(PIN_AIR_CONDITIONING_0, payload);
     }
     else if (strcmp(topic, CHANNEL_INFRARED_TRANSMITTER_0) == 0) {
-        infraredTransmitter(payload, length);
+        infraredTransmitter(payload);
     }
 }
 
@@ -137,30 +137,18 @@ void controlRelay(const int pin_number, byte* payload) {
     }
 }
 
-void infraredTransmitter(byte* payload, unsigned int length) {
-    if (length != 8) return;
-
-    unsigned long data = 0;
-    for (int i = 0; i < length; i++) {
-        char c = (char)payload[i];
-        if ('0' <= c && c <= '9') {
-            c -= '0';
-        }
-        else if ('A' <= c && c <= 'Z') {
-            c -= 'A';
-            c += 10;
-        }
-        else if ('a' <= c && c <= 'z') {
-            c -= 'z';
-            c += 10;
-        }
-        else {
-            return;
-        }
-        data <<= 4;
-        data |= c;
+void infraredTransmitter(byte* payload) {
+    if (memcmp(payload, "on", 2) == 0) {
+        irsend.sendNEC(0x00000000, 32);
     }
-    // Serial.println(data);
-    irsend.sendNEC(data, 32);
+    else if (memcmp(payload, "off", 3) == 0) {
+        irsend.sendNEC(0x00000000, 32);
+    }
+    else if (memcmp(payload, "strength", 8) == 0) {
+        irsend.sendNEC(0x00000000, 32);
+    }
+    else if (memcmp(payload, "weak", 4) == 0) {
+        irsend.sendNEC(0x00000000, 32);
+    }
 }
 
