@@ -47,6 +47,14 @@ void setup() {
     pinMode(PIN_AIR_CONDITIONING_0, OUTPUT);
 
     // TODO: PIN_INFRARED_TRANSMITTER_0
+    
+    digitalWrite(PIN_LIGHT_0, HIGH);
+    digitalWrite(PIN_LIGHT_1, HIGH);
+    digitalWrite(PIN_LIGHT_2, HIGH);
+    digitalWrite(PIN_DOOR_0, HIGH);
+    digitalWrite(PIN_AIR_CONDITIONING_0, HIGH);
+
+    // TODO: PIN_INFRARED_TRANSMITTER_0 init
 }
 
 void loop() {
@@ -123,10 +131,10 @@ void printReceiveData(char* topic, byte* payload, unsigned int length) {
 
 void controlRelay(const int pin_number, byte* payload) {
     if (memcmp(payload, "on", 2) == 0) {
-        digitalWrite(pin_number, HIGH);
+        digitalWrite(pin_number, LOW);
     }
     else if (memcmp(payload, "off", 3) == 0) {
-        digitalWrite(pin_number, LOW);
+        digitalWrite(pin_number, HIGH);
     }
 }
 
