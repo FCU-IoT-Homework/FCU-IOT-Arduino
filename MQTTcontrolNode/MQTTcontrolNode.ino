@@ -4,6 +4,13 @@
 #include <PubSubClient.h>
 #include "config.h"
 
+#define CHANNEL_LIGHT_0 "light_0"
+#define CHANNEL_LIGHT_1 "light_1"
+#define CHANNEL_LIGHT_2 "light_2"
+#define CHANNEL_DOOR_0  "door_0"
+#define CHANNEL_AIR_CONDITIONING_0 "air_conditioning_0"
+#define CHANNEL_INFRARED_TRANSMITTER_0 "infrared_transmitter_0"
+
 void subscribeChannel();
 void callback(char* topic, byte* payload, unsigned int length);
 void printReceiveData(char* topic, byte* payload, unsigned int length);
@@ -63,13 +70,12 @@ void reconnect() {
 }
 
 void subscribeChannel() {
-    client.subscribe("light_0");
-    client.subscribe("light_1");
-    client.subscribe("light_2");
-    client.subscribe("door_0");
-    client.subscribe("air_conditioning_0");
-
-    client.subscribe("infrared_transmitter_0");
+    client.subscribe(CHANNEL_LIGHT_0);
+    client.subscribe(CHANNEL_LIGHT_1);
+    client.subscribe(CHANNEL_LIGHT_2);
+    client.subscribe(CHANNEL_DOOR_0);
+    client.subscribe(CHANNEL_AIR_CONDITIONING_0);
+    client.subscribe(CHANNEL_INFRARED_TRANSMITTER_0);
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -82,7 +88,7 @@ void printReceiveData(char* topic, byte* payload, unsigned int length) {
     Serial.print(topic);
     Serial.print("] ");
     for (int i=0;i<length;i++) {
-    Serial.print((char)payload[i]);
+        Serial.print((char)payload[i]);
     }
     Serial.println();
 }
