@@ -1,6 +1,5 @@
 #include <dht.h>
-#include <SPI.h>
-#include <Ethernet.h>
+#include <YunClient.h>
 #include <PubSubClient.h>
 #include <IRremote.h>
 #include "config.h"
@@ -18,27 +17,16 @@ void printReceiveData(char* topic, byte* payload, unsigned int length);
 void controlRelay(const int pin_number, byte* payload);
 void infraredTransmitter(byte* payload);
 
-EthernetClient ethClient;
-PubSubClient client(ethClient);
+YunClient yun;
+PubSubClient client(yun);
 IRsend irsend;
 
 void setup() {
     Serial.begin(9600);
+    Bridge.begin();
     
     client.setServer(server, 1883);
     client.setCallback(callback);
-
-    if (USE_DHCP) {
-        if (Ethernet.begin(mac) == 0) {
-            Serial.println("Failed to configure Ethernet using DHCP");
-            while (1) ;
-        }
-    }
-    else {
-        Ethernet.begin(mac, ip);
-    }
-    Serial.print("IP: ");
-    Serial.println(Ethernet.localIP());
     
     // Allow the hardware to sort itself out
     delay(1500);

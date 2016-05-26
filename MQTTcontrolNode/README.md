@@ -1,3 +1,6 @@
+# 硬體
+Android Yun
+
 # Library
 * pubsubclient v2.6 (https://github.com/knolleary/pubsubclient)
 * Arduino-IRremote (https://github.com/z3t0/Arduino-IRremote)
